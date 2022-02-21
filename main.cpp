@@ -8,6 +8,7 @@ int main() {
 
     landscape.read();
     landscape.printInfo();
+    landscape.applyBlueFilter(50);
     landscape.save("landscape_copy");
 
     return 0;

@@ -26,6 +26,8 @@ public:
 
     void printInfo() const;
 
+    void applyBlueFilter(int intensity);
+
 private:
     void readHeader();
 

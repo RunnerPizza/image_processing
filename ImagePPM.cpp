@@ -33,6 +33,16 @@ void ImagePPM::save(const std::string &name) {
 
 }
 
+void ImagePPM::applyBlueFilter(int intensity) {
+    std::cout << "applying the blue filter ..." << std::endl;
+    for (int i = 0; i < height; i++) // y axis
+        for (int j = 0; j < width; j++) // x axis
+            if (data[width * i + j].blue + intensity > depth)
+                data[width * i + j].blue = depth;
+            else
+                data[width * i + j].blue += intensity;
+}
+
 void ImagePPM::readHeader() {
     img >> type;
     img >> width;
