@@ -3,4 +3,9 @@ project(image_processing)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(image_processing main.cpp ImagePPM.cpp ImagePPM.h)
+add_subdirectory(test)
+
+set(SOURCE_FILES Pixel.cpp Pixel.h Image.cpp Image.h ImageProcessing.cpp ImageProcessing.h)
+add_executable(image_processing main.cpp)
+add_library(core ${SOURCE_FILES})
+target_link_libraries(image_processing core)
