@@ -6,6 +6,7 @@
 #define IMAGE_PROCESSING_IMAGEPROCESSING_H
 
 #include "Image.h"
+#include "ImagePPM.h"
 #include <cmath>
 
 class ImageProcessing {
@@ -20,10 +21,10 @@ public:
 
     static Image *box_blur(Image *img);
 
-    static Image *toGrayscale(const Image &img);
+    static Image *toGrayscale(Image *img);
 
 private:
-    static Image *convolution(float kernel[3][3], Image img);
+    static Image *convolution(float kernel[3][3], Image *img);
 
     static int normalise(int value);
 };

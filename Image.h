@@ -9,46 +9,30 @@
 #include <fstream>
 #include "Pixel.h"
 
-enum class ImageType {P, P2, P3};
+enum class ImageType {
+    P2, P3
+};
 
 class Image {
 public:
 
-    Image();
-
-    Image(const Image &img);
-
-    Image(const std::string &format, int width, int height, int depth);
-
-    ~Image();
+    virtual ~Image();
 
     void printInfo() const;
 
-    static Image *readPGM(const std::string &path);
+    virtual void read(const std::string &path) = 0;
 
-    static Image *readPPM(const std::string &path);
+    virtual void save(const std::string &path) = 0;
 
-    static void savePGM(const std::string &path, const Image &image);
-
-    static void savePPM(const std::string &path, const Image &image);
+    virtual Image *Clone(bool withBody = true) = 0;
 
     void addZeroPadding();
 
     void addNonZeroPadding();
 
-    bool operator== (const Image& img);
-
-    const Image &operator= (const Image& img);
+    bool operator==(const Image &img);
 
     const std::string &getFormat() const { return format; }
-
-    void setFormat(const std::string &format) { Image::format = format; }
-
-    void setWidth(int width) { Image::width = width; }
-
-    void setHeight(int height) { Image::height = height; }
-
-    void setDepth(int depth) { Image::depth = depth; }
 
     int getWidth() const { return width; }
 
@@ -56,9 +40,23 @@ public:
 
     int getDepth() const { return depth; }
 
-    Pixel& getPixel(int x, int y) const { return data[x][y]; }
+    Pixel &getPixel(int x, int y) const { return data[x][y]; }
 
-    static ImageType getImageType(const std::string &path);
+    static ImageType getType(const std::string &path);
+
+protected:
+
+    void allocateData();
+
+    void deallocateData(Pixel **data, int width);
+
+    void deallocateData();
+
+    void copyDataFrom(const Image &img);
+
+    void copyHeaderFrom(const Image &img);
+
+    std::string replaceExt(const std::string &path, const std::string &newExt);
 
 protected:
     std::string format;

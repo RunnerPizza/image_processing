@@ -5,154 +5,14 @@
 #include "Image.h"
 #include <exception>
 
-Image::Image() : format(""), width(0), height(0), depth(0), data(nullptr) {}
-
-Image::Image(const Image &img) : format(img.format) { // copy constructor
-    // copy header
-    width = img.width;
-    height = img.height;
-    depth = img.depth;
-
-    // memory allocation for data
-    data = new Pixel *[width];
-    for (int i = 0; i < width; ++i)
-        data[i] = new Pixel[height];
-
-    // copy body
-    if (img.data)
-        for (int i = 0; i < height; ++i)
-            for (int j = 0; j < width; ++j)
-                data[j][i] = img.data[j][i];
-}
-
-Image::Image(const std::string &format, int width, int height, int depth) {
-    this->format = format;
-    this->width = width;
-    this->height = height;
-    this->depth = depth;
-
-    // memory allocation for data
+void Image::allocateData() {
     data = new Pixel *[width];
     for (int i = 0; i < width; ++i)
         data[i] = new Pixel[height];
 }
 
 Image::~Image() {
-    for (int i = 0; i < width; ++i)
-        delete[] data[i];
-    delete[] data;
-}
-
-Image *Image::readPGM(const std::string &path) {
-    Image *img = nullptr;
-    std::ifstream imgFile(path);
-
-    if (imgFile.is_open()) {
-        img = new Image;
-
-        // read header
-        imgFile >> img->format;
-        imgFile >> img->width;
-        imgFile >> img->height;
-        imgFile >> img->depth;
-
-        // memory allocation for data
-        img->data = new Pixel *[img->width];
-        for (int i = 0; i < img->width; ++i)
-            img->data[i] = new Pixel[img->height];
-
-        // read body
-        int pixelValue;
-        for (int i = 0; i < img->height; i++) {
-            for (int j = 0; j < img->width; j++) { // imgFile << data[j][i];
-                imgFile >> pixelValue;
-                img->data[j][i] = pixelValue;
-            }
-        }
-
-        imgFile.close();
-    } else
-        throw std::runtime_error("Error opening file!");
-
-    return img;
-}
-
-Image *Image::readPPM(const std::string &path) {
-    Image *img = nullptr;
-    std::ifstream imgFile(path);
-
-    if (imgFile.is_open()) {
-        img = new Image;
-
-        // read header
-        imgFile >> img->format;
-        imgFile >> img->width;
-        imgFile >> img->height;
-        imgFile >> img->depth;
-
-        // memory allocation for data
-        img->data = new Pixel *[img->width];
-        for (int i = 0; i < img->width; ++i)
-            img->data[i] = new Pixel[img->height];
-
-        // read body
-        for (int i = 0; i < img->height; i++) {
-            for (int j = 0; j < img->width; j++) {
-                imgFile >> img->data[j][i].red;
-                imgFile >> img->data[j][i].green;
-                imgFile >> img->data[j][i].blue;
-            }
-        }
-
-        imgFile.close();
-    } else
-        throw std::runtime_error("Error opening file!");
-
-    return img;
-}
-
-void Image::savePGM(const std::string &path, const Image &img) {
-    std::ofstream imgFile(path);
-
-    if (imgFile.is_open()) {
-        // write header
-        imgFile << img.format << std::endl;
-        imgFile << img.width << " " << img.height << std::endl;
-        imgFile << img.depth << std::endl;
-
-        //write body
-        for (int i = 0; i < img.height; i++) {
-            for (int j = 0; j < img.width; j++) {
-                imgFile << img.data[j][i].red << std::endl;
-            }
-        }
-
-        imgFile.close();
-    }else
-        throw std::runtime_error("Error saving file!");
-}
-
-void Image::savePPM(const std::string &path, const Image &img) {
-    std::ofstream imgFile(path);
-
-    if (imgFile.is_open()) {
-        // write header
-        imgFile << img.format << std::endl;
-        imgFile << img.width << " " << img.height << std::endl;
-        imgFile << img.depth << std::endl;
-
-        //write body
-        for (int i = 0; i < img.height; i++) {
-            for (int j = 0; j < img.width; j++) {
-                imgFile << img.data[j][i].red << std::endl;
-                imgFile << img.data[j][i].green << std::endl;
-                imgFile << img.data[j][i].blue << std::endl;
-            }
-        }
-
-        imgFile.close();
-    } else
-        throw std::runtime_error("Error saving file!");
+    deallocateData();
 }
 
 void Image::printInfo() const {
@@ -169,10 +29,7 @@ void Image::addZeroPadding() {
     width += 2;
     height += 2;
     Pixel **oldData = data;
-    // memory allocation for data
-    data = new Pixel *[width];
-    for (int i = 0; i < width; ++i)
-        data[i] = new Pixel[height];
+    allocateData();
     // set matrix to 0
     for (int i = 0; i < height; ++i)
         for (int j = 0; j < width; ++j)
@@ -181,10 +38,8 @@ void Image::addZeroPadding() {
     for (int i = 0; i < oldHeight; ++i)
         for (int j = 0; j < oldWidth; ++j)
             data[j + 1][i + 1] = oldData[j][i];
-    // memory deallocation for old data
-    for (int i = 0; i < oldWidth; ++i)
-        delete[] oldData[i];
-    delete[] oldData;
+
+    deallocateData(oldData, oldWidth);
 }
 
 void Image::addNonZeroPadding() {
@@ -194,10 +49,7 @@ void Image::addNonZeroPadding() {
     width += 2;
     height += 2;
     Pixel **oldData = data;
-    // memory allocation for data
-    data = new Pixel *[width];
-    for (int i = 0; i < width; ++i)
-        data[i] = new Pixel[height];
+    allocateData();
     // set top left corner
     data[0][0] = oldData[0][0];
     // set top right corner
@@ -222,10 +74,8 @@ void Image::addNonZeroPadding() {
     for (int i = 0; i < oldHeight; ++i)
         for (int j = 0; j < oldWidth; ++j)
             data[j + 1][i + 1] = oldData[j][i];
-    // memory deallocation for old data
-    for (int i = 0; i < oldWidth; ++i)
-        delete[] oldData[i];
-    delete[] oldData;
+
+    deallocateData(oldData, oldWidth);
 }
 
 bool Image::operator==(const Image &img) {
@@ -238,44 +88,45 @@ bool Image::operator==(const Image &img) {
     return true;
 }
 
-const Image &Image::operator=(const Image &img) {
-    if (this != &img) {
-        // memory deallocation for data
-        if (data) {
-            for (int i = 0; i < width; ++i)
-                delete[] data[i];
-            delete[] data;
-        }
-
-        // copy header
-        format = img.format;
-        width = img.width;
-        height = img.height;
-        depth = img.depth;
-
-        if (img.data) {
-            // memory allocation for data
-            data = new Pixel *[width];
-            for (int i = 0; i < width; ++i)
-                data[i] = new Pixel[height];
-
-            // copy body
-            if (img.data)
-                for (int i = 0; i < height; ++i)
-                    for (int j = 0; j < width; ++j)
-                        data[j][i] = img.data[j][i];
-        }
-
-    }
-    return *this;
+void Image::copyHeaderFrom(const Image &img) {
+    format = img.format;
+    width = img.width;
+    height = img.height;
+    depth = img.depth;
 }
 
-ImageType Image::getImageType(const std::string &path) {
+void Image::copyDataFrom(const Image &img) {
+    for (int i = 0; i < height; ++i)
+        for (int j = 0; j < width; ++j)
+            data[j][i] = img.data[j][i];
+}
+
+void Image::deallocateData(Pixel **data, int width) {
+    if (data) {
+        for (int i = 0; i < width; ++i)
+            delete[] data[i];
+        delete[] data;
+    }
+}
+
+void Image::deallocateData() {
+    deallocateData(data, width);
+}
+
+ImageType Image::getType(const std::string &path) {
     std::string extension = path.substr(path.find_last_of(".") + 1);
 
     if (extension == "pgm")
         return ImageType::P2;
     if (extension == "ppm")
         return ImageType::P3;
-    return ImageType::P;
+}
+
+std::string Image::replaceExt(const std::string &path, const std::string &newExt) {
+    std::string newPath;
+    for (int i = 0; path[i] != '.'; ++i) {
+        newPath += path[i];
+    }
+    newPath += newExt;
+    return newPath;
 }
