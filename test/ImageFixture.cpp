@@ -26,7 +26,7 @@ TEST_F(ImageProcessingSuite, TestIdentity) {
     std::unique_ptr<Image> resultImg(ImageProcessing::identity(img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
-    EXPECT_EQ(*resultImg == *targetImg, true);
+    EXPECT_TRUE(*resultImg == *targetImg);
 }
 
 TEST_F(ImageProcessingSuite, TestSharpen) {
@@ -34,7 +34,7 @@ TEST_F(ImageProcessingSuite, TestSharpen) {
     std::unique_ptr<Image> resultImg(ImageProcessing::sharpen(img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
-    EXPECT_EQ(*resultImg == *targetImg, true);
+    EXPECT_TRUE(*resultImg == *targetImg);
 }
 
 TEST_F(ImageProcessingSuite, TestRidgeDetection1) {
@@ -42,7 +42,7 @@ TEST_F(ImageProcessingSuite, TestRidgeDetection1) {
     std::unique_ptr<Image> resultImg(ImageProcessing::ridge_detection1(img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
-    EXPECT_EQ(*resultImg == *targetImg, true);
+    EXPECT_TRUE(*resultImg == *targetImg);
 }
 
 TEST_F(ImageProcessingSuite, TestRidgeDetection2) {
@@ -50,7 +50,7 @@ TEST_F(ImageProcessingSuite, TestRidgeDetection2) {
     std::unique_ptr<Image> resultImg(ImageProcessing::ridge_detection2(img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
-    EXPECT_EQ(*resultImg == *targetImg, true);
+    EXPECT_TRUE(*resultImg == *targetImg);
 }
 
 TEST_F(ImageProcessingSuite, TestBoxBlur) {
@@ -58,7 +58,7 @@ TEST_F(ImageProcessingSuite, TestBoxBlur) {
     std::unique_ptr<Image> resultImg(ImageProcessing::box_blur(img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
-    EXPECT_EQ(*resultImg == *targetImg, true);
+    EXPECT_TRUE(*resultImg == *targetImg);
 }
 
 
@@ -68,7 +68,7 @@ TEST_F(ImageProcessingSuite, TestZeroPadding) {
     resultImg->addZeroPadding();
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
-    EXPECT_EQ(*resultImg == *targetImg, true);
+    EXPECT_TRUE(*resultImg == *targetImg);
 }
 
 TEST_F(ImageProcessingSuite, TestNonZeroPadding) {
@@ -77,7 +77,7 @@ TEST_F(ImageProcessingSuite, TestNonZeroPadding) {
     resultImg->addNonZeroPadding();
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
-    EXPECT_EQ(*resultImg == *targetImg, true);
+    EXPECT_TRUE(*resultImg == *targetImg);
 }
 
 TEST_F(ImageProcessingSuite, TestToGrayscale) {
@@ -85,5 +85,5 @@ TEST_F(ImageProcessingSuite, TestToGrayscale) {
     std::unique_ptr<Image> resultImg(ImageProcessing::toGrayscale(img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
-    EXPECT_EQ(*resultImg == *targetImg, true);
+    EXPECT_TRUE(*resultImg == *targetImg);
 }
