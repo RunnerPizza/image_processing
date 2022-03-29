@@ -122,7 +122,7 @@ ImageType Image::getType(const std::string &path) {
         return ImageType::P3;
 }
 
-std::string Image::replaceExt(const std::string &path, const std::string &newExt) {
+std::string Image::replaceExt(const std::string &path, const std::string &newExt) const {
     std::string newPath;
     for (int i = 0; path[i] != '.'; ++i) {
         newPath += path[i];

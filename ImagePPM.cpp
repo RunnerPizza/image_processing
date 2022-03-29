@@ -31,7 +31,7 @@ void ImagePPM::read(const std::string &path) {
         throw std::runtime_error("Error opening file!");
 }
 
-void ImagePPM::save(const std::string &path) {
+void ImagePPM::save(const std::string &path) const {
     // set appropriate extension to prevent errors
     std::string newPath = replaceExt(path, ".ppm");
 

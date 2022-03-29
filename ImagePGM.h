@@ -13,7 +13,7 @@ public:
     virtual ~ImagePGM() = default;
     ImagePGM(const std::string &format, int width, int height, int depth);
     void read(const std::string &path) override;
-    void save(const std::string &path) override;
+    void save(const std::string &path) const override;
     ImagePGM* Clone(bool withBody = true) override;
 };
 

@@ -22,7 +22,7 @@ public:
 
     virtual void read(const std::string &path) = 0;
 
-    virtual void save(const std::string &path) = 0;
+    virtual void save(const std::string &path) const = 0;
 
     virtual Image *Clone(bool withBody = true) = 0;
 
@@ -56,7 +56,7 @@ protected:
 
     void copyHeaderFrom(const Image &img);
 
-    std::string replaceExt(const std::string &path, const std::string &newExt);
+    std::string replaceExt(const std::string &path, const std::string &newExt) const;
 
 protected:
     std::string format;

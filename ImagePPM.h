@@ -12,7 +12,7 @@ public:
     ImagePPM() = default;
     virtual ~ImagePPM() = default;
     void read(const std::string &path) override;
-    void save(const std::string &path) override;
+    void save(const std::string &path) const override;
     ImagePPM* Clone(bool withBody = true) override;
 };
 
