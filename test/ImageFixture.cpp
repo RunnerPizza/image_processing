@@ -87,3 +87,19 @@ TEST_F(ImageProcessingSuite, TestToGrayscale) {
     targetImg->read(target_image_path);
     EXPECT_TRUE(*resultImg == *targetImg);
 }
+
+TEST_F(ImageProcessingSuite, TestFileReading)
+{
+    Image* imgFile = nullptr;
+    EXPECT_THROW({
+                     try
+                     {
+                         imgFile = ImageFactory::createImage("/wrong/image/path/image.ppm");
+                         imgFile->read("/wrong/image/path/image.ppm");
+                     }
+                     catch( const std::runtime_error& e ) {
+                         EXPECT_STREQ( "Error opening file!", e.what() );
+                         throw;
+                     }
+                 }, std::runtime_error );
+}
