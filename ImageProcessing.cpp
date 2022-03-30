@@ -2,6 +2,7 @@
 // Created by tommaso on 22/02/22.
 //
 
+#include <memory>
 #include "ImageProcessing.h"
 #include "ImagePGM.h"
 
@@ -87,16 +88,20 @@ Image *ImageProcessing::ridge_detection1(Image *img) {
     float ridge_detection1[3][3]{{0, 1,  0},
                                  {1, -4, 1},
                                  {0, 1,  0}};
-    if (img->getFormat() == "P3")
-        img = toGrayscale(img);
-    return convolution(ridge_detection1, img);
+    std::unique_ptr<Image> tmp(img->Clone(true));
+    if (img->getFormat() == "P3") {
+        tmp = std::unique_ptr<Image>(toGrayscale(img));
+    }
+    return convolution(ridge_detection1, tmp.get());
 }
 
 Image *ImageProcessing::ridge_detection2(Image *img) {
     float ridge_detection2[3][3]{{-1, -1, -1},
                                  {-1, 8,  -1},
                                  {-1, -1, -1}};
-    if (img->getFormat() == "P3")
-        img = toGrayscale(img);
-    return convolution(ridge_detection2, img);
+    std::unique_ptr<Image> tmp(img->Clone(true));
+    if (img->getFormat() == "P3") {
+        tmp = std::unique_ptr<Image>(toGrayscale(img));
+    }
+    return convolution(ridge_detection2, tmp.get());
 }

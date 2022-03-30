@@ -19,8 +19,9 @@ int main() {
         std::cin >> image_reading_path;
         std::cout << std::endl;
 
+        img = ImageFactory::createImage(image_reading_path);
+
         try {
-            img = ImageFactory::createImage(image_reading_path);
             img->read(image_reading_path);
         } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
