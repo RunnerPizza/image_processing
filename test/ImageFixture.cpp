@@ -118,7 +118,7 @@ TEST_F(ImageProcessingSuite, TestFileSaving) {
 TEST_F(ImageProcessingSuite, TestGetPixel) {
     Pixel expectedPixel, currentPixel;
     // wrong coordinates value
-    img->getPixel(-4, 1);
+    EXPECT_NO_THROW(img->getPixel(-4, 1));
     // correct coordinates value
     expectedPixel = 255;
     currentPixel = img->getPixel(1, 1);
@@ -129,7 +129,7 @@ TEST_F(ImageProcessingSuite, TestSetPixel) {
     Pixel expectedPixel(153, 0, 76);
     Pixel currentPixel;
     // wrong coordinates value
-    img->setPixel(-5,20, 0);
+    EXPECT_NO_THROW(img->setPixel(-5,20, 0));
     // correct coordinates value
     img->setRedPixel(0,0, 153);
     img->setGreenPixel(0,0, 0);
