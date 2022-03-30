@@ -118,3 +118,14 @@ TEST_F(ImageProcessingSuite, TestFileSaving)
                      }
                  }, std::runtime_error );
 }
+
+TEST_F(ImageProcessingSuite, TestGetPixel)
+{
+    Pixel expectedPixel, currentPixel;
+    // wrong coordinates value
+    img->getPixel(-4,1);
+    // correct coordinates value
+    expectedPixel = 255;
+    currentPixel = img->getPixel(1,1);
+    EXPECT_TRUE(currentPixel == expectedPixel);
+}
