@@ -16,6 +16,8 @@ enum class ImageType {
 class Image {
 public:
 
+    Image();
+
     virtual ~Image();
 
     void printInfo() const;

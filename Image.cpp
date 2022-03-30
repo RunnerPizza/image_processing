@@ -11,10 +11,6 @@ void Image::allocateData() {
         data[i] = new Pixel[height];
 }
 
-Image::~Image() {
-    deallocateData();
-}
-
 void Image::printInfo() const {
     std::cout << "format: " << format << std::endl
               << "width: " << width << std::endl
@@ -129,4 +125,10 @@ std::string Image::replaceExt(const std::string &path, const std::string &newExt
     }
     newPath += newExt;
     return newPath;
+}
+
+Image::Image() : format(""), width(0), height(0), depth(0), data(nullptr) {}
+
+Image::~Image() {
+    deallocateData();
 }
