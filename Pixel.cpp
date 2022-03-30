@@ -4,6 +4,10 @@
 
 #include "Pixel.h"
 
+Pixel::Pixel(int r, int g, int b) : red(r), green(g), blue(b) {}
+
+Pixel::Pixel(int value) : red(value), green(value), blue(value) {}
+
 const Pixel &Pixel::operator=(int value) {
     red = value;
     green = value;

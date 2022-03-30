@@ -9,6 +9,12 @@
 class Pixel {
 public:
 
+    Pixel() = default;
+
+    Pixel(int r, int g, int b);
+
+    Pixel(int value);
+
     const Pixel& operator=(int value);
 
     const Pixel& operator=(const Pixel& pixel);
