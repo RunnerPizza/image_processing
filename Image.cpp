@@ -132,3 +132,33 @@ Image::Image() : format(""), width(0), height(0), depth(0), data(nullptr) {}
 Image::~Image() {
     deallocateData();
 }
+
+const Pixel &Image::getPixel(int x, int y) const {
+    if ((x >= 0 && x < width) && (y >= 0 && y < height))
+        return data[x][y];
+}
+
+void Image::setPixel(int x, int y, const Pixel &p) {
+    if ((x >= 0 && x < width) && (y >= 0 && y < height))
+        data[x][y] = p;
+}
+
+void Image::setPixel(int x, int y, int value) {
+    if ((x >= 0 && x < width) && (y >= 0 && y < height))
+        data[x][y] = value;
+}
+
+void Image::setRedPixel(int x, int y, int value) {
+    if ((x >= 0 && x < width) && (y >= 0 && y < height))
+        data[x][y].red = value;
+}
+
+void Image::setGreenPixel(int x, int y, int value) {
+    if ((x >= 0 && x < width) && (y >= 0 && y < height))
+        data[x][y].green = value;
+}
+
+void Image::setBluePixel(int x, int y, int value) {
+    if ((x >= 0 && x < width) && (y >= 0 && y < height))
+        data[x][y].blue = value;
+}

@@ -42,7 +42,17 @@ public:
 
     int getDepth() const { return depth; }
 
-    Pixel &getPixel(int x, int y) const { return data[x][y]; }
+    const Pixel &getPixel(int x, int y) const;
+
+    void setPixel(int x, int y, const Pixel &p);
+
+    void setPixel(int x, int y, int value);
+
+    void setRedPixel(int x, int y, int value);
+
+    void setGreenPixel(int x, int y, int value);
+
+    void setBluePixel(int x, int y, int value);
 
     static ImageType getType(const std::string &path);
 

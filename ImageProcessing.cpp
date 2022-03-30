@@ -25,9 +25,9 @@ Image *ImageProcessing::convolution(float kernel[3][3], Image *img) {
             greenSum = round(greenSum);
             blueSum = round(blueSum);
 
-            result->getPixel(z, k).red = normalise(redSum);
-            result->getPixel(z, k).green = normalise(greenSum);
-            result->getPixel(z, k).blue = normalise(blueSum);
+            result->setRedPixel(z, k, normalise(redSum));
+            result->setGreenPixel(z, k, normalise(greenSum));
+            result->setBluePixel(z, k, normalise(blueSum));
         }
     }
 
@@ -56,7 +56,7 @@ Image *ImageProcessing::toGrayscale(Image *img) {
             Wg = gWeight * img->getPixel(j, i).green;
             Wb = bWeight * img->getPixel(j, i).blue;
             weightedSum = Wr + Wg + Wb;
-            grayImg->getPixel(j, i) = roundf(weightedSum);
+            grayImg->setPixel(j, i, roundf(weightedSum));
         }
     }
     return grayImg;
