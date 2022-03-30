@@ -88,44 +88,52 @@ TEST_F(ImageProcessingSuite, TestToGrayscale) {
     EXPECT_TRUE(*resultImg == *targetImg);
 }
 
-TEST_F(ImageProcessingSuite, TestFileReading)
-{
+TEST_F(ImageProcessingSuite, TestFileReading) {
     std::unique_ptr<Image> imgFile(ImageFactory::createImage("/wrong/image/path/image.ppm"));
     EXPECT_THROW({
-                     try
-                     {
+                     try {
                          imgFile->read("/wrong/image/path/image.ppm");
                      }
-                     catch( const std::runtime_error& e ) {
-                         EXPECT_STREQ( "Error opening file!", e.what() );
+                     catch (const std::runtime_error &e) {
+                         EXPECT_STREQ("Error opening file!", e.what());
                          throw;
                      }
-                 }, std::runtime_error );
+                 }, std::runtime_error);
 }
 
-TEST_F(ImageProcessingSuite, TestFileSaving)
-{
+TEST_F(ImageProcessingSuite, TestFileSaving) {
     std::unique_ptr<Image> imgFile(ImageFactory::createImage("sample_images/test.ppm"));
     imgFile->read("sample_images/test.ppm");
     EXPECT_THROW({
-                     try
-                     {
+                     try {
                          imgFile->save("/wrong/image/path/image.ppm");
                      }
-                     catch( const std::runtime_error& e ) {
-                         EXPECT_STREQ( "Error saving file!", e.what() );
+                     catch (const std::runtime_error &e) {
+                         EXPECT_STREQ("Error saving file!", e.what());
                          throw;
                      }
-                 }, std::runtime_error );
+                 }, std::runtime_error);
 }
 
-TEST_F(ImageProcessingSuite, TestGetPixel)
-{
+TEST_F(ImageProcessingSuite, TestGetPixel) {
     Pixel expectedPixel, currentPixel;
     // wrong coordinates value
-    img->getPixel(-4,1);
+    img->getPixel(-4, 1);
     // correct coordinates value
     expectedPixel = 255;
-    currentPixel = img->getPixel(1,1);
+    currentPixel = img->getPixel(1, 1);
+    EXPECT_TRUE(currentPixel == expectedPixel);
+}
+
+TEST_F(ImageProcessingSuite, TestSetPixel) {
+    Pixel expectedPixel(153, 0, 76);
+    Pixel currentPixel;
+    // wrong coordinates value
+    img->setPixel(-5,20, 0);
+    // correct coordinates value
+    img->setRedPixel(0,0, 153);
+    img->setGreenPixel(0,0, 0);
+    img->setBluePixel(0,0, 76);
+    currentPixel = img->getPixel(0, 0);
     EXPECT_TRUE(currentPixel == expectedPixel);
 }
