@@ -90,15 +90,30 @@ TEST_F(ImageProcessingSuite, TestToGrayscale) {
 
 TEST_F(ImageProcessingSuite, TestFileReading)
 {
-    Image* imgFile = nullptr;
+    std::unique_ptr<Image> imgFile(ImageFactory::createImage("/wrong/image/path/image.ppm"));
     EXPECT_THROW({
                      try
                      {
-                         imgFile = ImageFactory::createImage("/wrong/image/path/image.ppm");
                          imgFile->read("/wrong/image/path/image.ppm");
                      }
                      catch( const std::runtime_error& e ) {
                          EXPECT_STREQ( "Error opening file!", e.what() );
+                         throw;
+                     }
+                 }, std::runtime_error );
+}
+
+TEST_F(ImageProcessingSuite, TestFileSaving)
+{
+    std::unique_ptr<Image> imgFile(ImageFactory::createImage("sample_images/test.ppm"));
+    imgFile->read("sample_images/test.ppm");
+    EXPECT_THROW({
+                     try
+                     {
+                         imgFile->save("/wrong/image/path/image.ppm");
+                     }
+                     catch( const std::runtime_error& e ) {
+                         EXPECT_STREQ( "Error saving file!", e.what() );
                          throw;
                      }
                  }, std::runtime_error );
