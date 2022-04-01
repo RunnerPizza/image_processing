@@ -6,50 +6,63 @@
 #include "ImageProcessing.h"
 #include "ImagePGM.h"
 
-Image *ImageProcessing::convolution(float kernel[3][3], Image *img) {
+ImageProcessing::ImageProcessing(int kS) : kernelSize(kS) {
+    kernel = new float *[kernelSize];
+    for (int i = 0; i < kernelSize; ++i)
+        kernel[i] = new float[kernelSize];
+}
+
+ImageProcessing::~ImageProcessing() {
+    if (kernel) {
+        for (int i = 0; i < kernelSize; ++i)
+            delete[] kernel[i];
+        delete[] kernel;
+    }
+}
+
+std::unique_ptr<Image> ImageProcessing::convolution(const std::unique_ptr<Image> &img) const {
     float redSum, greenSum, blueSum;
-    Image *result = img->Clone(false);
-    Image *imgCopy = img->Clone(true);
-    img->addNonZeroPadding();
+    std::unique_ptr<Image> result(img->Clone(false));
+    std::unique_ptr<Image> imgCopy(img->Clone(true));
+    imgCopy->addNonZeroPadding();
+    if (kernelSize == 5)
+        imgCopy->addNonZeroPadding();
     for (int k = 0; k < result->getHeight(); ++k) {
         for (int z = 0; z < result->getWidth(); ++z) {
             redSum = greenSum = blueSum = 0;
-            for (int i = 0; i < 3; ++i) {
-                for (int j = 0; j < 3; ++j) {
-                    redSum += kernel[j][i] * img->getPixel(j + z, i + k).red;
-                    greenSum += kernel[j][i] * img->getPixel(j + z, i + k).green;
-                    blueSum += kernel[j][i] * img->getPixel(j + z, i + k).blue;
+            for (int i = 0; i < kernelSize; ++i) {
+                for (int j = 0; j < kernelSize; ++j) {
+                    redSum += kernel[j][i] * imgCopy->getPixel(j + z, i + k).red;
+                    greenSum += kernel[j][i] * imgCopy->getPixel(j + z, i + k).green;
+                    blueSum += kernel[j][i] * imgCopy->getPixel(j + z, i + k).blue;
                 }
             }
             redSum = round(redSum);
             greenSum = round(greenSum);
             blueSum = round(blueSum);
 
-            result->setRedPixel(z, k, normalise(redSum));
-            result->setGreenPixel(z, k, normalise(greenSum));
-            result->setBluePixel(z, k, normalise(blueSum));
+            result->setRedPixel(z, k, normalise(redSum, img->getDepth()));
+            result->setGreenPixel(z, k, normalise(greenSum, img->getDepth()));
+            result->setBluePixel(z, k, normalise(blueSum, img->getDepth()));
         }
     }
-
-    delete imgCopy;
-
     return result;
 }
 
-int ImageProcessing::normalise(int value) {
-    if (value > 255)
-        value = 255;
+int ImageProcessing::normalise(int value, int depth) const {
+    if (value > depth)
+        value = depth;
     else if (value < 0)
         value = 0;
     return value;
 }
 
-Image *ImageProcessing::toGrayscale(Image *img) {
+std::unique_ptr<Image> ImageProcessing::toGrayscale(const std::unique_ptr<Image> &img) const {
     float rWeight = 0.299;
     float gWeight = 0.587;
     float bWeight = 0.144;
     float weightedSum, Wr, Wg, Wb;
-    Image *grayImg = new ImagePGM("P2", img->getWidth(), img->getHeight(), img->getDepth());
+    auto grayImg = std::unique_ptr<Image>(new ImagePGM("P2", img->getWidth(), img->getHeight(), img->getDepth()));
     for (int i = 0; i < img->getHeight(); ++i) {
         for (int j = 0; j < img->getWidth(); ++j) {
             Wr = rWeight * img->getPixel(j, i).red;
@@ -62,46 +75,103 @@ Image *ImageProcessing::toGrayscale(Image *img) {
     return grayImg;
 }
 
-Image *ImageProcessing::box_blur(Image *img) {
-    float box_blur[3][3];
-    for (int i = 0; i < 3; ++i)
-        for (int j = 0; j < 3; ++j)
-            box_blur[j][i] = (float) 1 / 9;
-    return convolution(box_blur, img);
-}
-
-Image *ImageProcessing::identity(Image *img) {
-    float identity[3][3]{{0, 0, 0},
-                         {0, 1, 0},
-                         {0, 0, 0}};
-    return convolution(identity, img);
-}
-
-Image *ImageProcessing::sharpen(Image *img) {
-    float sharpen[3][3]{{0,  -1, 0},
-                        {-1, 5,  -1},
-                        {0,  -1, 0}};
-    return convolution(sharpen, img);
-}
-
-Image *ImageProcessing::ridge_detection1(Image *img) {
-    float ridge_detection1[3][3]{{0, 1,  0},
-                                 {1, -4, 1},
-                                 {0, 1,  0}};
-    std::unique_ptr<Image> tmp(img->Clone(true));
-    if (img->getFormat() == "P3") {
-        tmp = std::unique_ptr<Image>(toGrayscale(img));
+std::unique_ptr<Image> ImageProcessing::convolution(Operation op, std::unique_ptr<Image> &img) {
+    switch (op) {
+        case Operation::identity: {
+            float values[] = {0, 0, 0, 0, 1, 0, 0, 0, 0};
+            initKernel(values);
+            break;
+        }
+        case Operation::sharpen: {
+            float values[] = {0, -1, 0, -1, 5, -1, 0, -1, 0};
+            initKernel(values);
+            break;
+        }
+        case Operation::ridgeDetection1: {
+            float values[] = {0, 1, 0, 1, -4, 1, 0, 1, 0};
+            initKernel(values);
+            if (img->getFormat() == "P3")
+                img = toGrayscale(img);
+            break;
+        }
+        case Operation::ridgeDetection2: {
+            float values[] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
+            initKernel(values);
+            if (img->getFormat() == "P3")
+                img = toGrayscale(img);
+            break;
+        }
+        case Operation::boxBlur: {
+            initKernel((float) 1 / 9);
+            break;
+        }
+        case Operation::toGrayscale: {
+            return toGrayscale(img);
+        }
+        case Operation::gaussianBlur3x3: {
+            float values[] = {1, 2, 1, 2, 4, 2, 1, 2, 1};
+            for (int i = 0; i < kernelSize * kernelSize; ++i)
+                values[i] *= (float) 1/16;
+            initKernel(values);
+            break;
+        }
+        case Operation::gaussianBlur5x5: {
+            float values[] = {1, 4, 6, 4, 1, 4, 16, 24, 16, 4, 6, 24, 36, 24, 6, 4, 16, 24, 16, 4, 1, 4, 6, 4, 1};
+            for (int i = 0; i < kernelSize * kernelSize; ++i)
+                values[i] *= (float) 1/256;
+            initKernel(values);
+            break;
+        }
+        case Operation::unsharpMasking5x5: {
+            float values[] = {1, 4, 6, 4, 1, 4, 16, 24, 16, 4, 6, 24, -476, 24, 6, 4, 16, 24, 16, 4, 1, 4, 6, 4, 1};
+            for (int i = 0; i < kernelSize * kernelSize; ++i)
+                values[i] *= (float) -1/256;
+            initKernel(values);
+            break;
+        }
     }
-    return convolution(ridge_detection1, tmp.get());
+    return convolution(img);
 }
 
-Image *ImageProcessing::ridge_detection2(Image *img) {
-    float ridge_detection2[3][3]{{-1, -1, -1},
-                                 {-1, 8,  -1},
-                                 {-1, -1, -1}};
-    std::unique_ptr<Image> tmp(img->Clone(true));
-    if (img->getFormat() == "P3") {
-        tmp = std::unique_ptr<Image>(toGrayscale(img));
+void ImageProcessing::initKernel(float *values) {
+    for (int i = 0; i < kernelSize; ++i) {
+        for (int j = 0; j < kernelSize; ++j) {
+            kernel[j][i] = values[kernelSize * i + j];
+        }
     }
-    return convolution(ridge_detection2, tmp.get());
+}
+
+void ImageProcessing::initKernel(float value) {
+    for (int i = 0; i < kernelSize; ++i) {
+        for (int j = 0; j < kernelSize; ++j) {
+            kernel[j][i] = value;
+        }
+    }
+}
+
+ImageProcessing::ImageProcessing(const ImageProcessing &imp) : ImageProcessing(imp.kernelSize) {
+    for (int i = 0; i < kernelSize; ++i) {
+        for (int j = 0; j < kernelSize; ++j) {
+            kernel[j][i] = imp.kernel[j][i];
+        }
+    }
+}
+
+const ImageProcessing &ImageProcessing::operator=(const ImageProcessing &imp) {
+    if (this != &imp) {
+        if (kernel) {
+            for (int i = 0; i < kernelSize; ++i)
+                delete[] kernel[i];
+            delete[] kernel;
+        }
+
+        kernelSize = imp.kernelSize;
+
+        for (int i = 0; i < kernelSize; ++i) {
+            for (int j = 0; j < kernelSize; ++j) {
+                kernel[j][i] = imp.kernel[j][i];
+            }
+        }
+    }
+    return *this;
 }

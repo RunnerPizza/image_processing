@@ -9,24 +9,37 @@
 #include "ImagePPM.h"
 #include <cmath>
 
+enum class Operation {
+    identity, sharpen, ridgeDetection1, ridgeDetection2, boxBlur, toGrayscale, gaussianBlur3x3, gaussianBlur5x5, unsharpMasking5x5
+};
+
 class ImageProcessing {
 public:
-    static Image *identity(Image *img);
 
-    static Image *sharpen(Image *img);
+    explicit ImageProcessing(int kS);
 
-    static Image *ridge_detection1(Image *img);
+    ImageProcessing(const ImageProcessing &imp);
 
-    static Image *ridge_detection2(Image *img);
+    ~ImageProcessing();
 
-    static Image *box_blur(Image *img);
+    const ImageProcessing &operator=(const ImageProcessing &imp);
 
-    static Image *toGrayscale(Image *img);
+    std::unique_ptr<Image> convolution(Operation op, std::unique_ptr<Image> &img);
 
 private:
-    static Image *convolution(float kernel[3][3], Image *img);
+    std::unique_ptr<Image> convolution(const std::unique_ptr<Image> &img) const;
 
-    static int normalise(int value);
+    std::unique_ptr<Image> toGrayscale(const std::unique_ptr<Image> &img) const;
+
+    int normalise(int value, int depth) const;
+
+    void initKernel(float *values);
+
+    void initKernel(float value);
+
+private:
+    float **kernel;
+    int kernelSize;
 };
 
 

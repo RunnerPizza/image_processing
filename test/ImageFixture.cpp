@@ -14,48 +14,49 @@ protected:
         img->read("sample_images/test.ppm");
     }
 
-    virtual void TearDown() {
-        delete img;
-    }
-
-    Image *img;
+    std::unique_ptr<Image> img;
 };
 
 TEST_F(ImageProcessingSuite, TestIdentity) {
+    ImageProcessing gimp(3);
     std::string target_image_path = "sample_images/unit_testing/identity.ppm";
-    std::unique_ptr<Image> resultImg(ImageProcessing::identity(img));
+    std::unique_ptr<Image> resultImg(gimp.convolution(Operation::identity, img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
     EXPECT_TRUE(*resultImg == *targetImg);
 }
 
 TEST_F(ImageProcessingSuite, TestSharpen) {
+    ImageProcessing gimp(3);
     std::string target_image_path = "sample_images/unit_testing/sharpen.ppm";
-    std::unique_ptr<Image> resultImg(ImageProcessing::sharpen(img));
+    std::unique_ptr<Image> resultImg(gimp.convolution(Operation::sharpen, img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
     EXPECT_TRUE(*resultImg == *targetImg);
 }
 
 TEST_F(ImageProcessingSuite, TestRidgeDetection1) {
+    ImageProcessing gimp(3);
     std::string target_image_path = "sample_images/unit_testing/ridge_detection1.pgm";
-    std::unique_ptr<Image> resultImg(ImageProcessing::ridge_detection1(img));
+    std::unique_ptr<Image> resultImg(gimp.convolution(Operation::ridgeDetection1, img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
     EXPECT_TRUE(*resultImg == *targetImg);
 }
 
 TEST_F(ImageProcessingSuite, TestRidgeDetection2) {
+    ImageProcessing gimp(3);
     std::string target_image_path = "sample_images/unit_testing/ridge_detection2.pgm";
-    std::unique_ptr<Image> resultImg(ImageProcessing::ridge_detection2(img));
+    std::unique_ptr<Image> resultImg(gimp.convolution(Operation::ridgeDetection2, img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
     EXPECT_TRUE(*resultImg == *targetImg);
 }
 
 TEST_F(ImageProcessingSuite, TestBoxBlur) {
+    ImageProcessing gimp(3);
     std::string target_image_path = "sample_images/unit_testing/box_blur.ppm";
-    std::unique_ptr<Image> resultImg(ImageProcessing::box_blur(img));
+    std::unique_ptr<Image> resultImg(gimp.convolution(Operation::boxBlur, img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
     EXPECT_TRUE(*resultImg == *targetImg);
@@ -81,8 +82,36 @@ TEST_F(ImageProcessingSuite, TestNonZeroPadding) {
 }
 
 TEST_F(ImageProcessingSuite, TestToGrayscale) {
+    ImageProcessing gimp(3);
     std::string target_image_path = "sample_images/unit_testing/grayscale.pgm";
-    std::unique_ptr<Image> resultImg(ImageProcessing::toGrayscale(img));
+    std::unique_ptr<Image> resultImg(gimp.convolution(Operation::toGrayscale, img));
+    std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
+    targetImg->read(target_image_path);
+    EXPECT_TRUE(*resultImg == *targetImg);
+}
+
+TEST_F(ImageProcessingSuite, TestGaussianBlur3x3) {
+    ImageProcessing gimp(3);
+    std::string target_image_path = "sample_images/unit_testing/gaussian_blur3x3.ppm";
+    std::unique_ptr<Image> resultImg(gimp.convolution(Operation::gaussianBlur3x3, img));
+    std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
+    targetImg->read(target_image_path);
+    EXPECT_TRUE(*resultImg == *targetImg);
+}
+
+TEST_F(ImageProcessingSuite, TestGaussianBlur5x5) {
+    ImageProcessing gimp(5);
+    std::string target_image_path = "sample_images/unit_testing/gaussian_blur5x5.ppm";
+    std::unique_ptr<Image> resultImg(gimp.convolution(Operation::gaussianBlur5x5, img));
+    std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
+    targetImg->read(target_image_path);
+    EXPECT_TRUE(*resultImg == *targetImg);
+}
+
+TEST_F(ImageProcessingSuite, TestUnsharpMasking5x5) {
+    ImageProcessing gimp(5);
+    std::string target_image_path = "sample_images/unit_testing/unsharp_masking5x5.ppm";
+    std::unique_ptr<Image> resultImg(gimp.convolution(Operation::unsharpMasking5x5, img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
     EXPECT_TRUE(*resultImg == *targetImg);

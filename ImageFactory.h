@@ -12,7 +12,7 @@
 
 class ImageFactory {
 public:
-    static Image *createImage(const std::string &path);
+    static std::unique_ptr<Image> createImage(const std::string &path);
 };
 
 

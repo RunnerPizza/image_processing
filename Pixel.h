@@ -13,7 +13,7 @@ public:
 
     Pixel(int r, int g, int b);
 
-    Pixel(int value);
+    explicit Pixel(int value);
 
     const Pixel& operator=(int value);
 
