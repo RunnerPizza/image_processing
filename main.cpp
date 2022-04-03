@@ -29,7 +29,6 @@ int main() {
             exit(0);
         }
 
-        std::cout << std::endl;
         std::cout << "--------- MENU ---------" << std::endl;
         std::cout << "0 - identity" << std::endl;
         std::cout << "1 - sharpen" << std::endl;
