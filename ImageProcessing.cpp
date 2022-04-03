@@ -58,9 +58,9 @@ int ImageProcessing::normalise(int value, int depth) const {
 }
 
 std::unique_ptr<Image> ImageProcessing::toGrayscale(const std::unique_ptr<Image> &img) const {
-    float rWeight = 0.299;
-    float gWeight = 0.587;
-    float bWeight = 0.144;
+    float rWeight = 0.2989;
+    float gWeight = 0.5870;
+    float bWeight = 0.1140;
     float weightedSum, Wr, Wg, Wb;
     auto grayImg = std::unique_ptr<Image>(new ImagePGM("P2", img->getWidth(), img->getHeight(), img->getDepth()));
     for (int i = 0; i < img->getHeight(); ++i) {
