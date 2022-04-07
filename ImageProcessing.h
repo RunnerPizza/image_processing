@@ -37,7 +37,6 @@ private:
 
     void initKernel(float value);
 
-private:
     float **kernel;
     int kernelSize;
 };
