@@ -15,13 +15,6 @@ const Pixel &Pixel::operator=(int value) {
     return *this;
 }
 
-const Pixel &Pixel::operator=(const Pixel& pixel) {
-    red = pixel.red;
-    green = pixel.green;
-    blue = pixel.blue;
-    return *this;
-}
-
 bool Pixel::operator==(const Pixel &pixel) {
     if (red == pixel.red && green == pixel.green && blue == pixel.blue)
         return true;

@@ -17,8 +17,6 @@ public:
 
     const Pixel& operator=(int value);
 
-    const Pixel& operator=(const Pixel& pixel);
-
     bool operator==(const Pixel &pixel);
 
     bool operator!=(const Pixel &pixel);
