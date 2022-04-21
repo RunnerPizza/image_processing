@@ -18,7 +18,7 @@ void Image::printInfo() const {
               << "depth: " << depth << std::endl;
 }
 
-void Image::addNonZeroPadding() {
+void Image::extendEdges() {
     int oldWidth, oldHeight;
     oldWidth = width;
     oldHeight = height;

@@ -24,9 +24,9 @@ std::unique_ptr<Image> ImageProcessing::convolution(const std::unique_ptr<Image>
     float redSum, greenSum, blueSum;
     std::unique_ptr<Image> result(img->Clone(false));
     std::unique_ptr<Image> imgCopy(img->Clone(true));
-    imgCopy->addNonZeroPadding();
+    imgCopy->extendEdges();
     if (kernelSize == 5)
-        imgCopy->addNonZeroPadding();
+        imgCopy->extendEdges();
     for (int k = 0; k < result->getHeight(); ++k) {
         for (int z = 0; z < result->getWidth(); ++z) {
             redSum = greenSum = blueSum = 0;

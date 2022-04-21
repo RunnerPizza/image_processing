@@ -28,7 +28,7 @@ public:
 
     virtual Image *Clone(bool withBody = true) = 0;
 
-    void addNonZeroPadding();
+    void extendEdges();
 
     bool operator==(const Image &img);
 
