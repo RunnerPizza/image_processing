@@ -18,26 +18,6 @@ void Image::printInfo() const {
               << "depth: " << depth << std::endl;
 }
 
-void Image::addZeroPadding() {
-    int oldWidth, oldHeight;
-    oldWidth = width;
-    oldHeight = height;
-    width += 2;
-    height += 2;
-    Pixel **oldData = data;
-    allocateData();
-    // set matrix to 0
-    for (int i = 0; i < height; ++i)
-        for (int j = 0; j < width; ++j)
-            data[j][i] = 0;
-    // copy old values at the center
-    for (int i = 0; i < oldHeight; ++i)
-        for (int j = 0; j < oldWidth; ++j)
-            data[j + 1][i + 1] = oldData[j][i];
-
-    deallocateData(oldData, oldWidth);
-}
-
 void Image::addNonZeroPadding() {
     int oldWidth, oldHeight;
     oldWidth = width;

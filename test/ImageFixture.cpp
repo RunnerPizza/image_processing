@@ -62,16 +62,6 @@ TEST_F(ImageProcessingSuite, TestBoxBlur) {
     EXPECT_TRUE(*resultImg == *targetImg);
 }
 
-
-TEST_F(ImageProcessingSuite, TestZeroPadding) {
-    std::string target_image_path = "sample_images/unit_testing/zero_padding.ppm";
-    std::unique_ptr<Image> resultImg(img->Clone(true));
-    resultImg->addZeroPadding();
-    std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
-    targetImg->read(target_image_path);
-    EXPECT_TRUE(*resultImg == *targetImg);
-}
-
 TEST_F(ImageProcessingSuite, TestNonZeroPadding) {
     std::string target_image_path = "sample_images/unit_testing/non_zero_padding.ppm";
     std::unique_ptr<Image> resultImg(img->Clone(true));
