@@ -37,24 +37,11 @@ std::unique_ptr<Image> ImageProcessing::convolution(const std::unique_ptr<Image>
                     blueSum += kernel[j][i] * imgCopy->getPixel(j + z, i + k).blue;
                 }
             }
-            redSum = round(redSum);
-            greenSum = round(greenSum);
-            blueSum = round(blueSum);
 
-            result->setRedPixel(z, k, normalise(redSum, img->getDepth()));
-            result->setGreenPixel(z, k, normalise(greenSum, img->getDepth()));
-            result->setBluePixel(z, k, normalise(blueSum, img->getDepth()));
+            result->setPixel(z, k, {redSum, greenSum, blueSum});
         }
     }
     return result;
-}
-
-int ImageProcessing::normalise(int value, int depth) const {
-    if (value > depth)
-        value = depth;
-    else if (value < 0)
-        value = 0;
-    return value;
 }
 
 std::unique_ptr<Image> ImageProcessing::toGrayscale(const std::unique_ptr<Image> &img) const {
@@ -133,7 +120,7 @@ std::unique_ptr<Image> ImageProcessing::convolution(Operation op, std::unique_pt
     return convolution(img);
 }
 
-void ImageProcessing::initKernel(float *values) {
+void ImageProcessing::initKernel(const float *values) {
     for (int i = 0; i < kernelSize; ++i) {
         for (int j = 0; j < kernelSize; ++j) {
             kernel[j][i] = values[kernelSize * i + j];

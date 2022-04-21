@@ -31,9 +31,7 @@ private:
 
     std::unique_ptr<Image> toGrayscale(const std::unique_ptr<Image> &img) const;
 
-    int normalise(int value, int depth) const;
-
-    void initKernel(float *values);
+    void initKernel(const float *values);
 
     void initKernel(float value);
 
