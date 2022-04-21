@@ -74,7 +74,7 @@ TEST_F(ImageProcessingSuite, TestExtendEdges) {
 TEST_F(ImageProcessingSuite, TestToGrayscale) {
     ImageProcessing gimp(3);
     std::string target_image_path = "sample_images/unit_testing/grayscale.pgm";
-    std::unique_ptr<Image> resultImg(gimp.convolution(Operation::toGrayscale, img));
+    std::unique_ptr<Image> resultImg(gimp.toGrayscale(img));
     std::unique_ptr<Image> targetImg(ImageFactory::createImage(target_image_path));
     targetImg->read(target_image_path);
     EXPECT_TRUE(*resultImg == *targetImg);

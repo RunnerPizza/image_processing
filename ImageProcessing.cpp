@@ -92,9 +92,6 @@ std::unique_ptr<Image> ImageProcessing::convolution(Operation op, std::unique_pt
             initKernel((float) 1 / 9);
             break;
         }
-        case Operation::toGrayscale: {
-            return toGrayscale(img);
-        }
         case Operation::gaussianBlur3x3: {
             float values[] = {1, 2, 1, 2, 4, 2, 1, 2, 1};
             for (int i = 0; i < kernelSize * kernelSize; ++i)

@@ -10,7 +10,7 @@
 #include <cmath>
 
 enum class Operation {
-    identity, sharpen, ridgeDetection1, ridgeDetection2, boxBlur, toGrayscale, gaussianBlur3x3, gaussianBlur5x5, unsharpMasking5x5
+    identity, sharpen, ridgeDetection1, ridgeDetection2, boxBlur, gaussianBlur3x3, gaussianBlur5x5, unsharpMasking5x5
 };
 
 class ImageProcessing {
@@ -26,10 +26,11 @@ public:
 
     std::unique_ptr<Image> convolution(Operation op, std::unique_ptr<Image> &img);
 
+    std::unique_ptr<Image> toGrayscale(const std::unique_ptr<Image> &img) const;
+
 private:
     std::unique_ptr<Image> convolution(const std::unique_ptr<Image> &img) const;
 
-    std::unique_ptr<Image> toGrayscale(const std::unique_ptr<Image> &img) const;
 
     void initKernel(const float *values);
 

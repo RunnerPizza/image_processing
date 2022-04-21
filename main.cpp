@@ -35,10 +35,10 @@ int main() {
         std::cout << "2 - ridge detection 1" << std::endl;
         std::cout << "3 - ridge detection 2" << std::endl;
         std::cout << "4 - box blur" << std::endl;
-        std::cout << "5 - convert to grayscale" << std::endl;
-        std::cout << "6 - gaussian blur 3x3" << std::endl;
-        std::cout << "7 - gaussian blur 5x5" << std::endl;
-        std::cout << "8 - unsharp masking 5x5" << std::endl;
+        std::cout << "5 - gaussian blur 3x3" << std::endl;
+        std::cout << "6 - gaussian blur 5x5" << std::endl;
+        std::cout << "7 - unsharp masking 5x5" << std::endl;
+        std::cout << "8 - convert to grayscale" << std::endl;
         std::cout << "------------------------" << std::endl;
         std::cout << std::endl;
 
@@ -65,14 +65,17 @@ int main() {
 
         int kernelSize;
 
-        if(choice >= 0 && choice <= 6)
+        if (choice >= 0 && choice <= 5)
             kernelSize = 3;
         else
             kernelSize = 5;
 
         ImageProcessing gimp(kernelSize);
 
-        result = gimp.convolution(static_cast<Operation>(choice), img);
+        if (choice != 8)
+            result = gimp.convolution(static_cast<Operation>(choice), img);
+        else
+            result = gimp.toGrayscale(img);
 
         std::cout << "What do you want to call the new image?" << std::endl;
         std::cout << "please enter path and name" << std::endl;
