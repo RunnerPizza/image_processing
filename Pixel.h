@@ -13,6 +13,8 @@ public:
 
     Pixel(int r, int g, int b);
 
+    Pixel(float r, float g, float b);
+
     explicit Pixel(int value);
 
     const Pixel& operator=(int value);
