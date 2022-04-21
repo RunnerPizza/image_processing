@@ -136,29 +136,52 @@ Image::~Image() {
 const Pixel &Image::getPixel(int x, int y) const {
     if ((x >= 0 && x < width) && (y >= 0 && y < height))
         return data[x][y];
+    else
+        throw std::out_of_range("Wrong index.");
 }
 
-void Image::setPixel(int x, int y, const Pixel &p) {
-    if ((x >= 0 && x < width) && (y >= 0 && y < height))
-        data[x][y] = p;
+int Image::normalise(int value) {
+    if (value > depth)
+        value = depth;
+    else if (value < 0)
+        value = 0;
+    return value;
 }
 
 void Image::setPixel(int x, int y, int value) {
     if ((x >= 0 && x < width) && (y >= 0 && y < height))
-        data[x][y] = value;
+        data[x][y] = normalise(value);
+    else
+        throw std::range_error("Wrong index. Cannot set the pixel value.");
 }
 
 void Image::setRedPixel(int x, int y, int value) {
     if ((x >= 0 && x < width) && (y >= 0 && y < height))
-        data[x][y].red = value;
+            data[x][y].red = normalise(value);
+    else
+        throw std::range_error("Wrong index. Cannot set the red pixel.");
 }
 
 void Image::setGreenPixel(int x, int y, int value) {
     if ((x >= 0 && x < width) && (y >= 0 && y < height))
-        data[x][y].green = value;
+            data[x][y].green = normalise(value);
+    else
+        throw std::range_error("Wrong index. Cannot set the green pixel.");
 }
 
 void Image::setBluePixel(int x, int y, int value) {
     if ((x >= 0 && x < width) && (y >= 0 && y < height))
-        data[x][y].blue = value;
+            data[x][y].blue = normalise(value);
+    else
+        throw std::range_error("Wrong index. Cannot set the blue pixel.");
+}
+
+void Image::setPixel(int x, int y, const Pixel &p) {
+    try {
+        setRedPixel(x, y, p.red);
+        setGreenPixel(x, y, p.green);
+        setBluePixel(x, y, p.blue);
+    } catch (const std::range_error &e) {
+        throw std::range_error("Wrong index. Cannot set the pixel.");
+    }
 }

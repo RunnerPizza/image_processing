@@ -145,24 +145,85 @@ TEST_F(ImageProcessingSuite, TestFileSaving) {
 }
 
 TEST_F(ImageProcessingSuite, TestGetPixel) {
-    Pixel expectedPixel, currentPixel;
-    // wrong coordinates value
-    EXPECT_NO_THROW(img->getPixel(-4, 1));
-    // correct coordinates value
-    expectedPixel = 255;
-    currentPixel = img->getPixel(1, 1);
-    EXPECT_TRUE(currentPixel == expectedPixel);
+    EXPECT_NO_THROW(img->getPixel(0, 0));
+    EXPECT_TRUE(Pixel(255, 0, 0) == img->getPixel(0, 0));
+    EXPECT_THROW({
+                     try {
+                         img->getPixel(4, 2);
+                     }
+                     catch (const std::out_of_range &e) {
+                         EXPECT_STREQ("Wrong index.", e.what());
+                         throw;
+                     }
+                 }, std::out_of_range);
 }
 
-TEST_F(ImageProcessingSuite, TestSetPixel) {
-    Pixel expectedPixel(153, 0, 76);
-    Pixel currentPixel;
-    // wrong coordinates value
-    EXPECT_NO_THROW(img->setPixel(-5,20, 0));
-    // correct coordinates value
-    img->setRedPixel(0,0, 153);
-    img->setGreenPixel(0,0, 0);
-    img->setBluePixel(0,0, 76);
-    currentPixel = img->getPixel(0, 0);
-    EXPECT_TRUE(currentPixel == expectedPixel);
+TEST_F(ImageProcessingSuite, TestSetRedPixel) {
+    EXPECT_THROW({
+                     try {
+                         img->setRedPixel(4, 2, 110);
+                     }
+                     catch (const std::range_error &e) {
+                         EXPECT_STREQ("Wrong index. Cannot set the red pixel.", e.what());
+                         throw;
+                     }
+                 }, std::range_error);
+    EXPECT_NO_THROW(img->setRedPixel(0, 0, 110));
+    EXPECT_TRUE(Pixel(110, 0, 0) == img->getPixel(0, 0));
+}
+
+TEST_F(ImageProcessingSuite, TestSetGreenPixel) {
+    EXPECT_THROW({
+                     try {
+                         img->setGreenPixel(4, 3, 115);
+                     }
+                     catch (const std::range_error &e) {
+                         EXPECT_STREQ("Wrong index. Cannot set the green pixel.", e.what());
+                         throw;
+                     }
+                 }, std::range_error);
+    EXPECT_NO_THROW(img->setGreenPixel(1, 0, 115));
+    EXPECT_TRUE(Pixel(0, 115, 0) == img->getPixel(1, 0));
+}
+
+TEST_F(ImageProcessingSuite, TestSetBluePixel) {
+    EXPECT_THROW({
+                     try {
+                         img->setBluePixel(-5, 2, 120);
+                     }
+                     catch (const std::range_error &e) {
+                         EXPECT_STREQ("Wrong index. Cannot set the blue pixel.", e.what());
+                         throw;
+                     }
+                 }, std::range_error);
+    EXPECT_NO_THROW(img->setBluePixel(2, 0, 120));
+    EXPECT_TRUE(Pixel(0, 0, 120) == img->getPixel(2, 0));
+}
+
+TEST_F(ImageProcessingSuite, TestSetPixelByValue) {
+    EXPECT_THROW({
+                     try {
+                         img->setPixel(2, -2, 125);
+                     }
+                     catch (const std::range_error &e) {
+                         EXPECT_STREQ("Wrong index. Cannot set the pixel value.", e.what());
+                         throw;
+                     }
+                 }, std::range_error);
+    EXPECT_NO_THROW(img->setPixel(2, 1, 125));
+    EXPECT_TRUE(Pixel(125, 125, 125) == img->getPixel(2, 1));
+}
+
+TEST_F(ImageProcessingSuite, TestSetPixelByPixel) {
+    EXPECT_THROW({
+                     try {
+                         img->setPixel(2, -2, {0, 0, 0});
+                     }
+                     catch (const std::range_error &e) {
+                         EXPECT_STREQ("Wrong index. Cannot set the pixel.", e.what());
+                         throw;
+                     }
+                 }, std::range_error);
+    EXPECT_NO_THROW(img->setPixel(2, 1, {0, 0, 0}));
+    EXPECT_TRUE(Pixel(0, 0, 0) == img->getPixel(2, 1));
 }

@@ -70,6 +70,10 @@ protected:
 
     std::string replaceExt(const std::string &path, const std::string &newExt) const;
 
+private:
+
+    int normalise(int value);
+
 protected:
     std::string format;
     int width;
