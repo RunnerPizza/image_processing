@@ -1,23 +1,26 @@
+#include<bits/stdc++.h>
 #include <iostream>
 #include <memory>
 #include "ImageProcessing.h"
 #include "Image.h"
+using namespace std;
+
 
 int main() {
 
-    std::string image_reading_path;
-    std::string image_saving_path;
+    string image_reading_path;
+    string image_saving_path;
 
     std::unique_ptr<Image> img;
     std::unique_ptr<Image> result;
 
-    std::string quit = "no";
+    string quit = "no";
     do {
-        std::cout << std::endl;
-        std::cout << "What image you want to modify?" << std::endl;
-        std::cout << "please insert the image path: ";
-        std::cin >> image_reading_path;
-        std::cout << std::endl;
+        cout<<"\n";
+        cout << "What image you want to modify?" << std::endl;
+        cout << "please insert the image path: ";
+        cin >> image_reading_path;
+        cout <<"\n";
 
         ImageType imgType = Image::getImageType(image_reading_path);
 
@@ -35,20 +38,20 @@ int main() {
             exit(0);
         }
 
-        std::cout << "--------- MENU ---------" << std::endl;
-        std::cout << "1 - identity" << std::endl;
-        std::cout << "2 - sharpen" << std::endl;
-        std::cout << "3 - ridge detection 1" << std::endl;
-        std::cout << "4 - ridge detection 2" << std::endl;
-        std::cout << "5 - box blur" << std::endl;
-        std::cout << "------------------------" << std::endl;
-        std::cout << std::endl;
+        cout << "--------- MENU ---------" << endl;
+        cout << "1 - identity" << endl;
+        cout << "2 - sharpen" << endl;
+        cout << "3 - ridge detection 1" << endl;
+        cout << "4 - ridge detection 2" << endl;
+        cout << "5 - box blur" << endl;
+        cout << "------------------------" << endl;
+        cout << endl;
 
         int choice;
-        std::cout << "Which filter you want to apply?" << std::endl;
-        std::cout << "please enter the filter's number: ";
-        std::cin >> choice;
-        std::cout << std::endl;
+        cout << "Which filter you want to apply?" << endl;
+        cout << "please enter the filter's number: ";
+        cin >> choice;
+        cout << endl;
 
         switch (choice) {
             case 1:
@@ -71,11 +74,11 @@ int main() {
                 exit(0);
         }
 
-        std::cout << "What do you want to call the new image?" << std::endl;
-        std::cout << "e.g. /home/user/Desktop/new_image.ppm" << std::endl;
-        std::cout << "please insert the name: ";
-        std::cin >> image_saving_path;
-        std::cout << std::endl;
+        cout << "What do you want to call the new image?" << endl;
+        cout << "e.g. /home/user/Desktop/new_image.ppm" << endl;
+        cout << "please insert the name: ";
+        cin >> image_saving_path;
+        cout << endl;
 
         ImageType resultType = Image::getImageType(image_saving_path);
 
